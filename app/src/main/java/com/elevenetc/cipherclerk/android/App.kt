@@ -2,6 +2,7 @@ package com.elevenetc.cipherclerk.android
 
 import android.app.Application
 import com.elevenetc.cipherclerk.android.common.DB
+import com.elevenetc.cipherclerk.android.common.RecordsRepository
 import org.koin.core.context.startKoin
 import org.koin.dsl.module
 
@@ -14,6 +15,7 @@ class App : Application() {
         val appModule = module {
             single { database }
             single { database.recordDao() }
+            single { RecordsRepository(get()) }
         }
 
         startKoin {
