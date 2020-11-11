@@ -1,4 +1,4 @@
-package com.elevenetc.cipherclerk.android.ui.home
+package com.elevenetc.cipherclerk.android.home
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData

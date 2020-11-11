@@ -1,13 +1,17 @@
 package com.elevenetc.cipherclerk.android.lock
 
 import com.elevenetc.cipherclerk.android.lock.ViewModel.State.Entry
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.FlowCollector
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.launch
+import kotlin.coroutines.CoroutineContext
 
-class ViewModel {
+class ViewModel : CoroutineScope {
 
-    lateinit var flowCollector:FlowCollector<State>
+    lateinit var flowCollector: FlowCollector<State>
 
     val state: Flow<State> = flow {
         flowCollector = this
@@ -17,7 +21,9 @@ class ViewModel {
     }
 
     fun addKey(value: Int) {
-        flowCollector.emit(State.Verifying)
+        launch {
+            flowCollector.emit(State.Verifying)
+        }
     }
 
     sealed class State {
@@ -26,4 +32,7 @@ class ViewModel {
         object VerifiedSuccess : State()
         object VerifiedFailed : State()
     }
+
+    override val coroutineContext: CoroutineContext
+        get() = Dispatchers.Main
 }
