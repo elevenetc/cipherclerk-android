@@ -1,7 +1,13 @@
 package com.elevenetc.cipherclerk.android
 
 import com.elevenetc.cipherclerk.android.lock.ViewModel
-import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.TestCoroutineDispatcher
+import kotlinx.coroutines.test.TestCoroutineScope
 import kotlinx.coroutines.test.runBlockingTest
 import org.junit.Test
 
@@ -12,15 +18,43 @@ import org.junit.Test
  */
 class ExampleUnitTest {
 
+    val testDispatcher = TestCoroutineDispatcher()
+
     @Test
-    fun addition_isCorrect() {
+    fun addition_isCorrect() = runBlockingTest {
         //assertEquals(4, 2 + 2)
 
-        runBlockingTest {
-            ViewModel().state.collect {
-                println(it)
-            }
+        ViewModel().state.collect {
+            println(it)
         }
 
     }
+
+    val scope = TestCoroutineScope(testDispatcher)
+
+    @Test
+    fun z() = runBlocking {
+
+        flowX.collect {
+            println("received:$it")
+        }
+
+        emitter.emit(1)
+        println("emitted: 1")
+        delay(1000)
+        emitter.emit(2)
+        println("emitted: 2")
+        delay(1000)
+        emitter.emit(3)
+        println("emitted: 3")
+        delay(1000)
+    }
+
+    lateinit var emitter: FlowCollector<Int>
+
+    val flowX: Flow<Int> = flow {
+        emitter = this
+    }
+
+    val s = MutableStateFlow<Int>(0)
 }

@@ -11,6 +11,9 @@ interface RecordDao {
     @Query("SELECT * FROM records ORDER BY `key` ASC")
     suspend fun getAll(): List<Record>
 
+    @Query("SELECT * FROM records WHERE id =:id")
+    suspend fun get(id: Int): Record
+
     @Query("SELECT * FROM records ORDER BY `key` ASC")
     fun getAllFlow(): Flow<List<Record>>
 
