@@ -8,7 +8,10 @@ import androidx.recyclerview.widget.RecyclerView
 import com.elevenetc.cipherclerk.android.R
 import com.elevenetc.cipherclerk.android.common.Record
 
-class RecordsAdapter(val records: List<Record>) : RecyclerView.Adapter<RecordsAdapter.VH>() {
+class RecordsAdapter(
+    val records: List<Record>,
+    val listener: (Record) -> Unit
+) : RecyclerView.Adapter<RecordsAdapter.VH>() {
 
     class VH(view: View) : RecyclerView.ViewHolder(view) {
 
@@ -24,11 +27,18 @@ class RecordsAdapter(val records: List<Record>) : RecyclerView.Adapter<RecordsAd
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VH {
         val view =
             LayoutInflater.from(parent.context).inflate(R.layout.rv_item_record, parent, false)
+
+
+
         return VH(view)
     }
 
     override fun onBindViewHolder(holder: VH, position: Int) {
-        holder.bind(records[position])
+        val record = records[position]
+        holder.bind(record)
+        holder.itemView.setOnClickListener {
+            listener(record)
+        }
     }
 
     override fun getItemCount(): Int {

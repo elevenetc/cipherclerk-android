@@ -5,7 +5,7 @@ import com.elevenetc.cipherclerk.android.common.RecordsRepository
 import com.elevenetc.cipherclerk.android.common.ViewModel
 import kotlinx.coroutines.launch
 
-class DetailsViewModel(val repository: RecordsRepository) : ViewModel() {
+class DetailsViewModel(private val repository: RecordsRepository) : ViewModel() {
 
     override fun onUserAction(action: UserAction) {
         if (action is GetRecord) {
@@ -13,9 +13,9 @@ class DetailsViewModel(val repository: RecordsRepository) : ViewModel() {
                 val recordId = action.id
                 val record = repository.get(recordId)
                 if (record == null) {
-                    fc.emit(RecordNotFoundResult(recordId))
+                    state.tryEmit(RecordNotFoundResult(recordId))
                 } else {
-                    fc.emit(RecordResult(record))
+                    state.tryEmit(RecordResult(record))
                 }
 
             }

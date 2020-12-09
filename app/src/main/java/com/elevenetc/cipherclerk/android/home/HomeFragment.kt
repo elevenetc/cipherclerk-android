@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.elevenetc.cipherclerk.android.R
 import com.elevenetc.cipherclerk.android.common.Record
 import com.elevenetc.cipherclerk.android.common.RecordsRepository
+import com.elevenetc.cipherclerk.android.details.RecordDetailsFragment
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collect
@@ -52,13 +53,20 @@ class HomeFragment : Fragment(), CoroutineScope {
         recordsRecycler.layoutManager = LinearLayoutManager(requireContext())
 
         launch {
-            allRecords.collect {
-
-                recordsRecycler.adapter = RecordsAdapter(it)
+            allRecords.collect { records ->
+                recordsRecycler.adapter = RecordsAdapter(records) { selectedRecord ->
+                    openDetails(selectedRecord)
+                }
             }
         }
 
         return root
+    }
+
+    private fun openDetails(record: Record) {
+        parentFragmentManager.beginTransaction()
+            .add(R.id.fragment_container_view_tag, RecordDetailsFragment.create(record.id))
+            .commit()
     }
 
     override val coroutineContext: CoroutineContext
