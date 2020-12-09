@@ -62,7 +62,7 @@ dependencies {
     /**
      * UI
      */
-    implementation 'com.google.android.material:material:1.3.0-alpha03'
+    implementation 'com.google.android.material:material:1.3.0-alpha04'
 
     /**
      * Testing
@@ -81,5 +81,10 @@ dependencies {
      * DI
      */
     implementation "org.koin:koin-android:$koin"
+
+    /**
+     * Utils
+     */
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.4.0"
 
 }
