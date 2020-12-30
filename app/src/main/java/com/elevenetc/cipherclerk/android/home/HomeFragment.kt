@@ -64,8 +64,13 @@ class HomeFragment : Fragment(), CoroutineScope {
     }
 
     private fun openDetails(record: Record) {
-        parentFragmentManager.beginTransaction()
-            .add(R.id.fragment_container_view_tag, RecordDetailsFragment.create(record.id))
+        val fragment = RecordDetailsFragment.create(record.id)
+
+        childFragmentManager
+            .beginTransaction()
+            .replace(R.id.root, fragment)
+            //.add(fragment, null)
+            .addToBackStack(null)
             .commit()
     }
 
