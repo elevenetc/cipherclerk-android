@@ -6,11 +6,15 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.elevenetc.cipherclerk.android.R
+import com.elevenetc.cipherclerk.android.navigation.Navigator
 import com.elevenetc.cipherclerk.android.ui.dashboard.DashboardFragment
 import com.elevenetc.cipherclerk.android.ui.notifications.NotificationsFragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import org.koin.android.ext.android.inject
 
 class MainFragment : Fragment() {
+
+    val navigator: Navigator by inject()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -33,22 +37,17 @@ class MainFragment : Fragment() {
         navView.setOnNavigationItemSelectedListener { item ->
             when (item.itemId) {
                 R.id.navigation_home -> {
-                    childFragmentManager
-                        .beginTransaction()
-                        .replace(R.id.main_fragment_container, HomeFragment())
-                        .commit()
+                    navigator.addSubScreen(this, HomeFragment(), R.id.main_fragment_container)
                 }
                 R.id.navigation_dashboard -> {
-                    childFragmentManager
-                        .beginTransaction()
-                        .replace(R.id.main_fragment_container, DashboardFragment())
-                        .commit()
+                    navigator.addSubScreen(this, DashboardFragment(), R.id.main_fragment_container)
                 }
                 R.id.navigation_notifications -> {
-                    childFragmentManager
-                        .beginTransaction()
-                        .replace(R.id.main_fragment_container, NotificationsFragment())
-                        .commit()
+                    navigator.addSubScreen(
+                        this,
+                        NotificationsFragment(),
+                        R.id.main_fragment_container
+                    )
                 }
             }
             true

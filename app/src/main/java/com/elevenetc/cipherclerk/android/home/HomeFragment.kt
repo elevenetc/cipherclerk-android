@@ -13,6 +13,7 @@ import com.elevenetc.cipherclerk.android.R
 import com.elevenetc.cipherclerk.android.common.Record
 import com.elevenetc.cipherclerk.android.common.RecordsRepository
 import com.elevenetc.cipherclerk.android.details.RecordDetailsFragment
+import com.elevenetc.cipherclerk.android.navigation.Navigator
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collect
@@ -25,6 +26,8 @@ class HomeFragment : Fragment(), CoroutineScope {
     private lateinit var homeViewModel: HomeViewModel
 
     val recordsRepository: RecordsRepository by inject()
+    val navigator: Navigator by inject()
+
     val backScope = CoroutineScope(Dispatchers.IO)
 
     override fun onCreateView(
@@ -65,13 +68,7 @@ class HomeFragment : Fragment(), CoroutineScope {
 
     private fun openDetails(record: Record) {
         val fragment = RecordDetailsFragment.create(record.id)
-
-        childFragmentManager
-            .beginTransaction()
-            .replace(R.id.root, fragment)
-            //.add(fragment, null)
-            .addToBackStack(null)
-            .commit()
+        navigator.addRootScreen(fragment)
     }
 
     override val coroutineContext: CoroutineContext
