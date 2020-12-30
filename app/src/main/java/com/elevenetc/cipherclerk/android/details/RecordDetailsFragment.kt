@@ -2,8 +2,13 @@ package com.elevenetc.cipherclerk.android.details
 
 import android.os.Bundle
 import android.view.View
+import android.widget.TextView
 import androidx.fragment.app.Fragment
 import com.elevenetc.cipherclerk.android.R
+import com.elevenetc.cipherclerk.android.common.ViewModel.Loading
+import com.elevenetc.cipherclerk.android.common.ViewModel.ViewState
+import com.elevenetc.cipherclerk.android.details.DetailsViewModel.*
+import com.elevenetc.cipherclerk.android.navigation.Navigator
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collect
@@ -14,20 +19,40 @@ import kotlin.coroutines.CoroutineContext
 class RecordDetailsFragment : Fragment(R.layout.fragment_record_details), CoroutineScope {
 
     val vm: DetailsViewModel by inject()
+    val navigator: Navigator by inject()
+
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 
         val id = requireArguments().getInt("id")
 
         launch {
-            vm.state.collect {
-                println(it)
+            vm.onUserAction(GetRecord(id))
+            vm.state.collect { state ->
+                handleState(state)
             }
-            vm.onUserAction(DetailsViewModel.GetRecord(id))
         }
-        
+
         view.findViewById<View>(R.id.btn_delete).setOnClickListener {
 
+        }
+    }
+
+    private fun handleState(state: ViewState) {
+        if (state is Loading || state is DeletingRecord) {
+            view?.findViewById<View>(R.id.text_loading)?.visibility = View.VISIBLE
+            view?.findViewById<View>(R.id.content_container)?.visibility = View.GONE
+        } else if (state is RecordResult) {
+            val record = state.record
+            view?.findViewById<View>(R.id.text_loading)?.visibility = View.GONE
+            view?.findViewById<View>(R.id.content_container)?.visibility = View.VISIBLE
+            view?.findViewById<TextView>(R.id.text_key)?.text = record.key
+            view?.findViewById<TextView>(R.id.text_value)?.text = record.value
+            view?.findViewById<TextView>(R.id.btn_delete)?.setOnClickListener {
+                vm.onUserAction(DeleteRecord(record.id))
+            }
+        } else if (state is DeletedSuccessfully) {
+            navigator.goBack()
         }
     }
 

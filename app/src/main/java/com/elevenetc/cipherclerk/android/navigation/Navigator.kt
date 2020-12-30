@@ -6,11 +6,10 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
-import com.elevenetc.cipherclerk.android.R
 
-class Navigator(val config: Config) {
+class Navigator(private val config: Config) {
 
-    var rootActivity: AppCompatActivity? = null
+    private var rootActivity: AppCompatActivity? = null
 
     init {
         config.app.registerActivityLifecycleCallbacks(object : ActivityLifeCycleCallback() {
@@ -28,10 +27,14 @@ class Navigator(val config: Config) {
         })
     }
 
+    fun goBack() {
+        rootActivity?.supportFragmentManager?.popBackStack()
+    }
+
     fun addRootScreen(fragment: Fragment) {
         rootActivity?.supportFragmentManager!!
             .beginTransaction()
-            .add(R.id.root, fragment)
+            .add(config.rootContainerId, fragment)
             .addToBackStack(null)
             .commit()
     }
@@ -52,5 +55,9 @@ class Navigator(val config: Config) {
         }
     }
 
-    data class Config(val app: Application, val rootActivity: Class<out AppCompatActivity>)
+    data class Config(
+        val app: Application,
+        val rootActivity: Class<out AppCompatActivity>,
+        val rootContainerId: Int
+    )
 }

@@ -19,12 +19,22 @@ class DetailsViewModel(private val repository: RecordsRepository) : ViewModel() 
                 }
 
             }
+        } else if (action is DeleteRecord) {
+            launch {
+                state.tryEmit(DeletingRecord(action.id))
+                repository.delete(action.id)
+                state.tryEmit(DeletedSuccessfully(action.id))
+            }
         }
     }
 
     data class GetRecord(val id: Int) : UserAction()
+    data class DeleteRecord(val id: Int) : UserAction()
+
     data class RecordResult(val record: Record) : ViewState()
     data class RecordNotFoundResult(val id: Int) : ViewState()
+    data class DeletingRecord(val id: Int) : ViewState()
+    data class DeletedSuccessfully(val id: Int) : ViewState()
 
 
 }

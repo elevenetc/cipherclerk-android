@@ -20,6 +20,9 @@ interface RecordDao {
     @Insert(onConflict = OnConflictStrategy.ABORT)
     suspend fun insert(record: Record): Long
 
+    @Query("DELETE FROM records WHERE id=:id")
+    suspend fun delete(id: Int): Int
+
     @Query("DELETE FROM records")
     suspend fun deleteAll()
 }

@@ -11,4 +11,8 @@ class RecordsRepository(private val recordDao: RecordDao) {
     suspend fun insert(record: Record) {
         recordDao.insert(record)
     }
+
+    suspend fun delete(id: Int) {
+        recordDao.delete(id)
+    }
 }

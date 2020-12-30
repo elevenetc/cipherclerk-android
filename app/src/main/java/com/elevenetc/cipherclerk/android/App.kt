@@ -11,7 +11,13 @@ import org.koin.dsl.module
 class App : Application() {
     override fun onCreate() {
         super.onCreate()
-        val navigator = Navigator(Navigator.Config(this, MainActivity::class.java))
+        val navigator = Navigator(
+            Navigator.Config(
+                this,
+                MainActivity::class.java,
+                R.id.root
+            )
+        )
         val database = DB.getDatabase(this)
 
         val appModule = module {
