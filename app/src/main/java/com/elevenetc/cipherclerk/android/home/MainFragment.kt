@@ -27,23 +27,17 @@ class MainFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 
-        if (savedInstanceState == null) {
-            childFragmentManager
-                .beginTransaction()
-                .replace(R.id.main_fragment_container, HomeFragment())
-                .commit()
-        }
-
         val navView: BottomNavigationView = view.findViewById(R.id.nav_view)
 
         navView.initNavigation(
-            mapOf(
+            linkedMapOf(
                 Pair(R.id.navigation_home, HomeFragment()),
                 Pair(R.id.navigation_dashboard, DashboardFragment()),
                 Pair(R.id.navigation_notifications, NotificationsFragment())
             ),
             R.id.main_fragment_container,
-            this
+            this,
+            savedInstanceState
         )
     }
 

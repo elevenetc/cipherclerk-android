@@ -1,13 +1,23 @@
 package com.elevenetc.cipherclerk.android.navigation
 
+import android.os.Bundle
 import androidx.fragment.app.Fragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
 fun BottomNavigationView.initNavigation(
-    map: Map<Int, Fragment>,
+    map: LinkedHashMap<Int, Fragment>,
     container: Int,
-    parent: Fragment
+    parent: Fragment,
+    savedInstanceState: Bundle?
 ) {
+
+    if (savedInstanceState == null) {
+        val initFragment = map.values.first()
+        parent.childFragmentManager
+            .beginTransaction()
+            .add(container, initFragment)
+            .commit()
+    }
 
     setOnNavigationItemSelectedListener { item ->
         val itemId = item.itemId
@@ -18,16 +28,22 @@ fun BottomNavigationView.initNavigation(
 
         //TODO: add error message if currentFragment is null
 
-        var transaction = fm.beginTransaction().hide(currentFragment!!)
-
-        transaction = if (newFragment.isAdded) {
-            transaction.show(newFragment)
+        if (currentFragment === newFragment) {
+            true
         } else {
-            transaction.add(container, newFragment)
+            var transaction = fm.beginTransaction().hide(currentFragment!!)
+
+            transaction = if (newFragment.isAdded) {
+                transaction.show(newFragment)
+            } else {
+                transaction.add(container, newFragment)
+            }
+
+            transaction.commit()
+
+            true
         }
 
-        transaction.commit()
 
-        true
     }
 }
