@@ -16,7 +16,7 @@ class RecordsAdapter(
     class VH(view: View) : RecyclerView.ViewHolder(view) {
 
         val textKey = view.findViewById<TextView>(R.id.text_key)
-        val textValue = view.findViewById<TextView>(R.id.text_value)
+        val textValue = view.findViewById<TextView>(R.id.edit_text_value)
 
         fun bind(record: Record) {
             textKey.text = record.key

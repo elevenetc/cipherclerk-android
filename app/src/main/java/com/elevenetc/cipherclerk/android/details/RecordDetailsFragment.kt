@@ -21,7 +21,6 @@ class RecordDetailsFragment : Fragment(R.layout.fragment_record_details), Corout
     val vm: DetailsViewModel by inject()
     val navigator: Navigator by inject()
 
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 
         val id = requireArguments().getInt("id")
@@ -32,10 +31,6 @@ class RecordDetailsFragment : Fragment(R.layout.fragment_record_details), Corout
                 handleState(state)
             }
         }
-
-        view.findViewById<View>(R.id.btn_delete).setOnClickListener {
-
-        }
     }
 
     private fun handleState(state: ViewState) {
@@ -44,13 +39,24 @@ class RecordDetailsFragment : Fragment(R.layout.fragment_record_details), Corout
             view?.findViewById<View>(R.id.content_container)?.visibility = View.GONE
         } else if (state is RecordResult) {
             val record = state.record
+            val editValue = view?.findViewById<TextView>(R.id.edit_text_value)!!
+
+            editValue.text = record.value
+
             view?.findViewById<View>(R.id.text_loading)?.visibility = View.GONE
             view?.findViewById<View>(R.id.content_container)?.visibility = View.VISIBLE
+            view?.findViewById<TextView>(R.id.text_id)?.text = record.id.toString()
             view?.findViewById<TextView>(R.id.text_key)?.text = record.key
-            view?.findViewById<TextView>(R.id.text_value)?.text = record.value
+
             view?.findViewById<TextView>(R.id.btn_delete)?.setOnClickListener {
                 vm.onUserAction(DeleteRecord(record.id))
             }
+
+            view?.findViewById<TextView>(R.id.btn_update)?.setOnClickListener {
+                val newValue = editValue.text.toString()
+                vm.onUserAction(UpdateRecord(record.id, record.copy(value = newValue)))
+            }
+
         } else if (state is DeletedSuccessfully) {
             navigator.goBack()
         }

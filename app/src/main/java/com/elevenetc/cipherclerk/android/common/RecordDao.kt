@@ -1,9 +1,6 @@
 package com.elevenetc.cipherclerk.android.common
 
-import androidx.room.Dao
-import androidx.room.Insert
-import androidx.room.OnConflictStrategy
-import androidx.room.Query
+import androidx.room.*
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -19,6 +16,9 @@ interface RecordDao {
 
     @Insert(onConflict = OnConflictStrategy.ABORT)
     suspend fun insert(record: Record): Long
+
+    @Update
+    suspend fun update(record: Record): Int
 
     @Query("DELETE FROM records WHERE id=:id")
     suspend fun delete(id: Int): Int

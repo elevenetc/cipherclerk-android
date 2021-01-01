@@ -5,12 +5,11 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 
 @Entity(tableName = "records")
-class Record(
+data class Record(
     @ColumnInfo(name = "key")
     val key: String,
     @ColumnInfo(name = "value")
-    val value: String
-) {
+    val value: String,
     @PrimaryKey(autoGenerate = true)
     var id: Int = 0
-}
+)

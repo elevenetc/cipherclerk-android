@@ -25,16 +25,27 @@ class DetailsViewModel(private val repository: RecordsRepository) : ViewModel() 
                 repository.delete(action.id)
                 state.tryEmit(DeletedSuccessfully(action.id))
             }
+        } else if (action is UpdateRecord) {
+            launch {
+                val record = action.updatedRecord
+                state.tryEmit(UpdatingRecord(action.id))
+                val updated = repository.update(record)
+                val get = repository.get(record.id)
+                state.tryEmit(RecordResult(get!!))
+            }
         }
     }
 
     data class GetRecord(val id: Int) : UserAction()
     data class DeleteRecord(val id: Int) : UserAction()
+    data class UpdateRecord(val id: Int, val updatedRecord: Record) : UserAction()
 
     data class RecordResult(val record: Record) : ViewState()
     data class RecordNotFoundResult(val id: Int) : ViewState()
     data class DeletingRecord(val id: Int) : ViewState()
+    data class UpdatingRecord(val id: Int) : ViewState()
     data class DeletedSuccessfully(val id: Int) : ViewState()
+    data class UpdatedSuccessfully(val id: Int) : ViewState()
 
 
 }
