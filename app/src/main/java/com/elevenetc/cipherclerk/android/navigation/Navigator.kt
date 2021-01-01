@@ -60,4 +60,14 @@ class Navigator(private val config: Config) {
         val rootActivity: Class<out AppCompatActivity>,
         val rootContainerId: Int
     )
+
+    class BottomNavAdapter(
+        val fragments: List<Fragment>,
+        val ids: List<Int>,
+        val container: Int
+    ) {
+        init {
+
+        }
+    }
 }

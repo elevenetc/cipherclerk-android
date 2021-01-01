@@ -35,24 +35,27 @@ class HomeFragment : Fragment(), CoroutineScope {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        return inflater.inflate(R.layout.fragment_home, container, false)
+    }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         val allRecords = recordsRepository.allRecords
 
         homeViewModel = ViewModelProviders.of(this).get(HomeViewModel::class.java)
-        val root = inflater.inflate(R.layout.fragment_home, container, false)
+
 
         homeViewModel.text.observe(viewLifecycleOwner, Observer {
             //textView.text = it
         })
 
-        root.findViewById<View>(R.id.btn_add_record).setOnClickListener {
+        view.findViewById<View>(R.id.btn_add_record).setOnClickListener {
             backScope.launch {
                 val time = System.currentTimeMillis().toString()
                 recordsRepository.insert(Record("id: $time", time))
             }
         }
 
-        val recordsRecycler = root.findViewById<RecyclerView>(R.id.records_recycler)
+        val recordsRecycler = view.findViewById<RecyclerView>(R.id.records_recycler)
         recordsRecycler.layoutManager = LinearLayoutManager(requireContext())
 
         launch {
@@ -62,8 +65,6 @@ class HomeFragment : Fragment(), CoroutineScope {
                 }
             }
         }
-
-        return root
     }
 
     private fun openDetails(record: Record) {

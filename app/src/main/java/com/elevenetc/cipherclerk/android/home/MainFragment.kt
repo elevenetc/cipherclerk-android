@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.elevenetc.cipherclerk.android.R
 import com.elevenetc.cipherclerk.android.navigation.Navigator
+import com.elevenetc.cipherclerk.android.navigation.initNavigation
 import com.elevenetc.cipherclerk.android.ui.dashboard.DashboardFragment
 import com.elevenetc.cipherclerk.android.ui.notifications.NotificationsFragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -34,24 +35,16 @@ class MainFragment : Fragment() {
         }
 
         val navView: BottomNavigationView = view.findViewById(R.id.nav_view)
-        navView.setOnNavigationItemSelectedListener { item ->
-            when (item.itemId) {
-                R.id.navigation_home -> {
-                    navigator.addSubScreen(this, HomeFragment(), R.id.main_fragment_container)
-                }
-                R.id.navigation_dashboard -> {
-                    navigator.addSubScreen(this, DashboardFragment(), R.id.main_fragment_container)
-                }
-                R.id.navigation_notifications -> {
-                    navigator.addSubScreen(
-                        this,
-                        NotificationsFragment(),
-                        R.id.main_fragment_container
-                    )
-                }
-            }
-            true
-        }
+
+        navView.initNavigation(
+            mapOf(
+                Pair(R.id.navigation_home, HomeFragment()),
+                Pair(R.id.navigation_dashboard, DashboardFragment()),
+                Pair(R.id.navigation_notifications, NotificationsFragment())
+            ),
+            R.id.main_fragment_container,
+            this
+        )
     }
 
     companion object {
