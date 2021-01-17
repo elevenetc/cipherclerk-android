@@ -1,9 +1,12 @@
 package com.elevenetc.cipherclerk.android
 
 import android.app.Application
+import android.content.Context
 import com.elevenetc.cipherclerk.android.common.DB
+import com.elevenetc.cipherclerk.android.common.LockRepository
 import com.elevenetc.cipherclerk.android.common.RecordsRepository
 import com.elevenetc.cipherclerk.android.details.DetailsViewModel
+import com.elevenetc.cipherclerk.android.lock.LockViewModel
 import com.elevenetc.cipherclerk.android.navigation.Navigator
 import org.koin.core.context.startKoin
 import org.koin.dsl.module
@@ -14,22 +17,22 @@ class App : Application() {
         val navigator = Navigator(
             Navigator.Config(
                 this,
-                MainActivity::class.java,
+                LauncherActivity::class.java,
                 R.id.root
             )
         )
         val database = DB.getDatabase(this)
+        val app: Context = this
 
         val appModule = module {
+            single { app }
             single { database }
             single { database.recordDao() }
             single { RecordsRepository(get()) }
+            single { LockRepository(get()) }
+            single { LockViewModel(get()) }
             single { navigator }
             factory { DetailsViewModel(get()) }
-        }
-
-        val detailsModule = module {
-            single { }
         }
 
         startKoin {

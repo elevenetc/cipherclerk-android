@@ -1,10 +1,8 @@
 package com.elevenetc.cipherclerk.android
 
-import com.elevenetc.cipherclerk.android.lock.ViewModel
-import kotlinx.coroutines.Dispatchers
+import com.elevenetc.cipherclerk.android.lock.LockViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.TestCoroutineDispatcher
 import kotlinx.coroutines.test.TestCoroutineScope
@@ -24,7 +22,7 @@ class ExampleUnitTest {
     fun addition_isCorrect() = runBlockingTest {
         //assertEquals(4, 2 + 2)
 
-        ViewModel().state.collect {
+        LockViewModel().state.collect {
             println(it)
         }
 

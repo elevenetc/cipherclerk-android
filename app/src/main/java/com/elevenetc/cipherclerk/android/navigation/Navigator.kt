@@ -31,12 +31,17 @@ class Navigator(private val config: Config) {
         rootActivity?.supportFragmentManager?.popBackStack()
     }
 
-    fun addRootScreen(fragment: Fragment) {
-        rootActivity?.supportFragmentManager!!
+    fun addRootScreen(fragment: Fragment, toBackStack: Boolean = true) {
+
+        var transaction = rootActivity?.supportFragmentManager!!
             .beginTransaction()
             .add(config.rootContainerId, fragment)
-            .addToBackStack(null)
-            .commit()
+
+        if (toBackStack) {
+            transaction = transaction.addToBackStack(null)
+        }
+
+        transaction.commit()
     }
 
     fun addSubScreen(sub: Fragment, child: Fragment, containerId: Int) {

@@ -1,4 +1,4 @@
-package com.elevenetc.cipherclerk.android.home
+package com.elevenetc.cipherclerk.android.records
 
 import android.view.LayoutInflater
 import android.view.View

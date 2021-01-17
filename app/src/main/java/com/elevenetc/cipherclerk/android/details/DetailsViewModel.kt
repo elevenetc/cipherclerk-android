@@ -8,44 +8,53 @@ import kotlinx.coroutines.launch
 class DetailsViewModel(private val repository: RecordsRepository) : ViewModel() {
 
     override fun onUserAction(action: UserAction) {
-        if (action is GetRecord) {
-            launch {
-                val recordId = action.id
-                val record = repository.get(recordId)
-                if (record == null) {
-                    state.tryEmit(RecordNotFoundResult(recordId))
-                } else {
-                    state.tryEmit(RecordResult(record))
-                }
+        when (action) {
+            is GetRecord -> {
+                launch {
+                    val recordId = action.id
+                    val record = repository.get(recordId)
+                    if (record == null) {
+                        state.tryEmit(RecordNotFoundResult(recordId))
+                    } else {
+                        state.tryEmit(RecordResult(record))
+                    }
 
+                }
             }
-        } else if (action is DeleteRecord) {
-            launch {
-                state.tryEmit(DeletingRecord(action.id))
-                repository.delete(action.id)
-                state.tryEmit(DeletedSuccessfully(action.id))
+            is DeleteRecord -> {
+                launch {
+                    state.tryEmit(DeletingRecord(action.id))
+                    repository.delete(action.id)
+                    state.tryEmit(DeletedSuccessfully(action.id))
+                }
             }
-        } else if (action is UpdateRecord) {
-            launch {
-                val record = action.updatedRecord
-                state.tryEmit(UpdatingRecord(action.id))
-                val updated = repository.update(record)
-                val get = repository.get(record.id)
-                state.tryEmit(RecordResult(get!!))
+            is UpdateRecord -> {
+                launch {
+                    val record = action.updatedRecord
+                    state.tryEmit(UpdatingRecord(action.id))
+                    val updated = repository.update(record)
+                    val get = repository.get(record.id)
+                    state.tryEmit(RecordResult(get!!))
+                }
             }
         }
     }
 
+    /**
+     * User actions
+     */
     data class GetRecord(val id: Int) : UserAction()
     data class DeleteRecord(val id: Int) : UserAction()
     data class UpdateRecord(val id: Int, val updatedRecord: Record) : UserAction()
 
+    /**
+     * View states
+     */
     data class RecordResult(val record: Record) : ViewState()
     data class RecordNotFoundResult(val id: Int) : ViewState()
     data class DeletingRecord(val id: Int) : ViewState()
     data class UpdatingRecord(val id: Int) : ViewState()
     data class DeletedSuccessfully(val id: Int) : ViewState()
-    data class UpdatedSuccessfully(val id: Int) : ViewState()
 
 
 }
