@@ -2,20 +2,18 @@ package com.elevenetc.cipherclerk.android.lock
 
 import android.os.Bundle
 import android.view.View
-import androidx.fragment.app.Fragment
 import com.elevenetc.cipherclerk.android.R
+import com.elevenetc.cipherclerk.android.common.BaseFragment
 import com.elevenetc.cipherclerk.android.common.ViewModel.ViewState
+import com.elevenetc.cipherclerk.android.common.focusAndShowKeyboard
 import com.elevenetc.cipherclerk.android.home.HomeFragment
 import com.elevenetc.cipherclerk.android.lock.LockViewModel.*
 import com.elevenetc.cipherclerk.android.navigation.Navigator
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
-import kotlin.coroutines.CoroutineContext
 
-class LockFragment : Fragment(R.layout.fragment_lock), CoroutineScope {
+class LockFragment : BaseFragment(R.layout.fragment_lock) {
 
     val vm: LockViewModel by inject()
     val navigator: Navigator by inject()
@@ -67,15 +65,15 @@ class LockFragment : Fragment(R.layout.fragment_lock), CoroutineScope {
 
     override fun onResume() {
         super.onResume()
-        stateView.showKey()
+        stateView.focusAndShowKeyboard()
     }
 
-    private fun handleState(state: ViewState) {
+    override fun handleState(state: ViewState) {
 
         stateView.handleState(state)
 
-        if (state is LockCreated) {
-            navigator.addRootScreen(HomeFragment.create(), false)
+        if (state is LockCreated || state is Unlocked) {
+            navigator.replaceRootScreen(HomeFragment.create())
         }
 
         //val stateView = view.findViewById<LockStateView>(R.id.lock_state_view)
@@ -84,14 +82,11 @@ class LockFragment : Fragment(R.layout.fragment_lock), CoroutineScope {
         //stateView.textState.text = state.javaClass.simpleName
 
         if (state is Unlocked) {
-            //navigator.
+
         } else if (state is CreatingLock) {
             //editPassword.setText(state.lock.toString())
         } else if (state is CreatingLockVerify) {
             //editPassword.setText(state.verify.toString())
         }
     }
-
-    override val coroutineContext: CoroutineContext
-        get() = Dispatchers.Main
 }

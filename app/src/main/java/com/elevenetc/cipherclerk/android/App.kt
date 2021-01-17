@@ -8,6 +8,7 @@ import com.elevenetc.cipherclerk.android.common.RecordsRepository
 import com.elevenetc.cipherclerk.android.details.DetailsViewModel
 import com.elevenetc.cipherclerk.android.lock.LockViewModel
 import com.elevenetc.cipherclerk.android.navigation.Navigator
+import com.elevenetc.cipherclerk.android.ui.notifications.SettingsViewModel
 import org.koin.core.context.startKoin
 import org.koin.dsl.module
 
@@ -31,6 +32,7 @@ class App : Application() {
             single { RecordsRepository(get()) }
             single { LockRepository(get()) }
             single { LockViewModel(get()) }
+            single { SettingsViewModel(get()) }
             single { navigator }
             factory { DetailsViewModel(get()) }
         }

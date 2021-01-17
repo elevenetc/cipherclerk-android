@@ -10,7 +10,7 @@ import com.elevenetc.cipherclerk.android.navigation.Navigator
 import com.elevenetc.cipherclerk.android.navigation.initNavigation
 import com.elevenetc.cipherclerk.android.records.RecordsFragment
 import com.elevenetc.cipherclerk.android.ui.dashboard.DashboardFragment
-import com.elevenetc.cipherclerk.android.ui.notifications.NotificationsFragment
+import com.elevenetc.cipherclerk.android.ui.notifications.SettingsFragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import org.koin.android.ext.android.inject
 
@@ -34,7 +34,7 @@ class HomeFragment : Fragment() {
             linkedMapOf(
                 Pair(R.id.navigation_home, RecordsFragment()),
                 Pair(R.id.navigation_dashboard, DashboardFragment()),
-                Pair(R.id.navigation_notifications, NotificationsFragment())
+                Pair(R.id.navigation_settings, SettingsFragment())
             ),
             R.id.main_fragment_container,
             this,

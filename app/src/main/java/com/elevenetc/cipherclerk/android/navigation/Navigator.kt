@@ -44,6 +44,13 @@ class Navigator(private val config: Config) {
         transaction.commit()
     }
 
+    fun replaceRootScreen(fragment: Fragment) {
+        rootActivity?.supportFragmentManager!!
+            .beginTransaction()
+            .replace(config.rootContainerId, fragment)
+            .commit()
+    }
+
     fun addSubScreen(sub: Fragment, child: Fragment, containerId: Int) {
         sub.childFragmentManager
             .beginTransaction()

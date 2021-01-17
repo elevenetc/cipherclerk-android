@@ -1,19 +1,15 @@
 package com.elevenetc.cipherclerk.android.lock
 
 import android.content.Context
-import android.content.Context.INPUT_METHOD_SERVICE
 import android.util.AttributeSet
 import android.view.KeyEvent
 import android.view.LayoutInflater
-import android.view.View
-import android.view.inputmethod.InputMethodManager
-import android.view.inputmethod.InputMethodManager.SHOW_IMPLICIT
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.elevenetc.cipherclerk.android.R
 import com.elevenetc.cipherclerk.android.common.ViewModel
-import com.elevenetc.cipherclerk.android.lock.LockViewModel.Delete
-import com.elevenetc.cipherclerk.android.lock.LockViewModel.Next
+import com.elevenetc.cipherclerk.android.common.focusAndShowKeyboard
+import com.elevenetc.cipherclerk.android.lock.LockViewModel.*
 
 
 class LockStateView(context: Context, attrs: AttributeSet?) : ConstraintLayout(context, attrs) {
@@ -32,33 +28,53 @@ class LockStateView(context: Context, attrs: AttributeSet?) : ConstraintLayout(c
         isFocusableInTouchMode = true
 
         setOnClickListener {
-            showKey()
+            focusAndShowKeyboard()
         }
 
-        addOnUnhandledKeyEventListener(object : OnUnhandledKeyEventListener {
-            override fun onUnhandledKeyEvent(v: View?, event: KeyEvent): Boolean {
+//        addOnUnhandledKeyEventListener(object : OnUnhandledKeyEventListener {
+//            override fun onUnhandledKeyEvent(v: View?, event: KeyEvent): Boolean {
+//
+//
+//                if (event.action == KeyEvent.ACTION_UP) {
+//                    val keyCode = event.keyCode
+//                    if (event.isPrintingKey) {
+//                        userActionListener(PassEntry(event.unicodeChar.toChar()))
+//                        return true
+//                    } else {
+//
+//                        if (keyCode == KeyEvent.KEYCODE_DEL) {
+//                            userActionListener(Delete)
+//                        } else if (keyCode == KeyEvent.KEYCODE_ENTER) {
+//                            userActionListener(Next)
+//                        }
+//
+//                        return false
+//                    }
+//                } else {
+//                    return false
+//                }
+//            }
+//        })
+    }
 
+    override fun onKeyUp(keyCode: Int, event: KeyEvent): Boolean {
+        if (event.action == KeyEvent.ACTION_UP) {
+            if (event.isPrintingKey) {
+                userActionListener(PassEntry(event.unicodeChar.toChar()))
+                return true
+            } else {
 
-                if (event.action == KeyEvent.ACTION_UP) {
-                    val keyCode = event.keyCode
-                    if (event.isPrintingKey) {
-                        userActionListener(LockViewModel.PasswordEntry(event.unicodeChar.toChar()))
-                        return true
-                    } else {
-
-                        if (keyCode == KeyEvent.KEYCODE_DEL) {
-                            userActionListener(Delete)
-                        } else if (keyCode == KeyEvent.KEYCODE_ENTER) {
-                            userActionListener(Next)
-                        }
-
-                        return false
-                    }
-                } else {
-                    return false
+                if (keyCode == KeyEvent.KEYCODE_DEL) {
+                    userActionListener(Delete)
+                } else if (keyCode == KeyEvent.KEYCODE_ENTER) {
+                    userActionListener(Next)
                 }
+
+                return false
             }
-        })
+        } else {
+            return super.onKeyDown(keyCode, event)
+        }
     }
 
     fun handleState(state: ViewModel.ViewState) {
@@ -66,20 +82,20 @@ class LockStateView(context: Context, attrs: AttributeSet?) : ConstraintLayout(c
         val stateName = state.javaClass.simpleName
 
 
-        if (state is LockViewModel.Unlocked) {
+        if (state is Unlocked) {
             //navigator.
-        } else if (state is LockViewModel.CreatingLock) {
+        } else if (state is CreatingLock) {
             textState.text = stateName + ": " + state.lock
             //editPassword.setText(state.lock.toString())
-        } else if (state is LockViewModel.CreatingLockVerify) {
+        } else if (state is CreatingLockVerify) {
             textState.text = stateName + " lock: " + state.lock + " verify:" + state.verify
             //editPassword.setText(state.verify.toString())
+        } else if (state is InvalidPasswordVerification) {
+            textState.text = "Verification is invalid. Enter new pass."
+        } else if (state is UnlockingLock) {
+            textState.text = stateName + ": " + state.lock
+        } else {
+            textState.text = stateName
         }
-    }
-
-    fun showKey() {
-        val imm = context.getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
-        requestFocus()
-        postDelayed({ imm.toggleSoftInput(SHOW_IMPLICIT, 0) }, 250)
     }
 }
