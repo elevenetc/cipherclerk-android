@@ -30,10 +30,10 @@ class App : Application() {
             single { database }
             single { database.recordDao() }
             single { RecordsRepository(get()) }
-            single { LockRepository(get()) }
-            single { LockViewModel(get()) }
-            single { SettingsViewModel(get()) }
             single { navigator }
+            single { LockRepository(get()) }
+            factory { LockViewModel(get()) }
+            factory { SettingsViewModel(get()) }
             factory { DetailsViewModel(get()) }
         }
 
